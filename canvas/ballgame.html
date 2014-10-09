@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html>
+  <head>
+   <meta http-equiv="content-type" content="text/html; charset=UTF-8" />
+    <title>lalalalala</title>
+    <script type="text/javascript" src="js/juqery-2.0.3.min.js"></script>
+
+  </head>
+  <body onload="windows_onload()">
+    <p class = "lftTxt1">小球弹跳游戏</p>
+    <p class = "lftTxt2">HTML 5动画</p>
+    <p class = "lftTxt4">
+      <input type="button" id="btnBegin" value="开始游戏" onclick="btnBegin_onclick()"/><br>
+      <canvas id="canvas" width="400" height="200" style="background-clor:#d6d6d6;" ></canvas>
+    </p>
+    <p class="roundbox"><span>单击小球可以结束游戏</span></p>
+
+<script type="text/javascript">
+var BallX,BallY;
+var AddX,AddY;
+var width,height;
+var canvas;
+var context;
+var functionId;
+//单击开始游戏按钮
+function btnBegin_onclick(){
+  var canvas=document.getElementById("canvas");
+  var context=canvas.getContext('2d');
+  width=400;
+  height=200;
+  BallX=parseInt(Math.random()*400);//随机横坐标
+  BallY=parseInt(Math.random()*200);
+  Addx=-5;
+  AddY=-5;
+  draw();
+//使开始按钮变为无效
+  document.getElementById("btnBegin").disabled="disabled";
+//每0.1秒重绘桌面与小球
+  functionId=setInterval("draw()",100);
+}
+//重绘桌面与小球
+function draw(){
+  context.clearRect(0,0,400,200);
+  context.save();
+  context.fillStyle="lightgreen";   //设置桌面为淡绿色
+  context.strokeStyle="black";      //设置边框为黑色
+  context.linewidth=3;
+  context.fillRect(3,3,395,195);
+  context.strokeRect(3,3,395,195);
+  context.beginPath();
+  context.fillStyle="blue";         //设置小球位蓝色
+  context.arc(BallX,BallY,5,0,Math.PI*2,false);
+  BallX+=AddX;
+  BallY+=AddY;
+  if(BallX<5)                        //小球向左移动时位置超过左边框
+  {
+      BallX=5;
+      AddX=-AddX;
+  }
+  else if(BallX>395)
+  {
+      BallX=395;
+      AddX=-AddX;
+
+  }
+    if(BallY<5)                        //小球向上移动时位置超过上边框
+  {
+      BallY=5;
+      AddY=-AddY;
+  }
+   else if(BallY>195)
+  {
+      BallY=195;
+      AddY=-AddY;
+  }
+  context.closePath();
+  context.fill();            //绘制小球
+  context.restore();
+}
+function canvas_mouseup(ev)
+{
+  var differenceX;       //鼠标击中点与小球中心点的横向偏差
+  var differenceY;
+
+  differenceX=ev.pageX-document.getElementById("canvas").offsetLeft-BallX;   //计算偏差
+  differenceY=ev.pageY-document.getElementById("canvas").offsetTop-BallY;
+
+  //如果横向偏差与纵向偏差均在5个像素之内即为击中小球
+  if(-5<=differenceX&&differenceX<=5)
+    if(-5<=differenceY&&differenceY<=5)
+    {
+      alert("恭喜你，游戏结束")；
+      clearInterval(functionId);
+      document.getElementById("btnBegin").disabled="";    //恢复开始游戏按钮
+    }
+}
+//画面打开时添加鼠标单击canvas元素时的事件处理
+function windows_onload()
+{
+  document.getElementById("canvas").onmouseup=canvas_mouseup;
+}
+
+</script>
+  </body>
+</html>
